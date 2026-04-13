@@ -1,38 +1,217 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite('resources/css/app.css')
-    <title>login</title>
-</head>
-<body>
+{{--
+    File: resources/views/auth/login.blade.php
+    
+    ============================================
+    DATA YANG DIBUTUHKAN DARI BACKEND:
+    ============================================
+    - Tidak ada data khusus, hanya session errors
+    
+    ============================================
+    ROUTE YANG DIPERLUKAN:
+    ============================================
+    - POST /login (form action)
+    - GET /register (link daftar)
+    - GET /forgot-password (link lupa password)
+    - POST /auth/google (social login - optional)
+    - GET / (redirect setelah login)
+    
+    ============================================
+    VALIDATION RULES (saran untuk backend):
+    ============================================
+    - email: required|email
+    - password: required|min:8
+--}}
 
+@extends('layouts.app')
 
-<div class="w-full max-w-sm bg-neutral-primary-soft p-6 border border-default rounded-base shadow-xs">
-    <form action="#">
-        <h5 class="text-xl font-semibold text-heading mb-6">Sign in to our platform</h5>
-        <div class="mb-4">
-            <label for="email" class="block mb-2.5 text-sm font-medium text-heading">Your email</label>
-            <input type="email" id="email" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="example@company.com" required />
-        </div>
-        <div>
-            <label for="password" class="block mb-2.5 text-sm font-medium text-heading">Your password</label>
-            <input type="password" id="password" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="•••••••••" required />
-        </div>
-        <div class="flex items-start my-6">
-            <div class="flex items-center">
-                <input id="checkbox-remember" type="checkbox" value="" class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft">
-                <label for="checkbox-remember" class="ms-2 text-sm font-medium text-heading">Remember me</label>
+@section('title', 'Masuk - TokoKu')
+
+@section('content')
+<div class="min-h-[70vh] flex items-center justify-center py-8">
+    <div class="w-full max-w-md">
+        {{-- Login Card --}}
+        <div class="bg-white rounded-xl shadow-sm p-6 lg:p-8">
+            {{-- Header --}}
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Masuk</h1>
+                <p class="text-gray-500 text-sm">Masuk ke akun TokoKu kamu</p>
             </div>
-            <a href="#" class="ms-auto text-sm font-medium text-fg-brand hover:underline">Lost Password?</a>
-        </div>
-        <button type="submit" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none w-full mb-3">Login to your account</button>
-        <div class="text-sm font-medium text-body">Not registered? <a href="#" class="text-fg-brand hover:underline">Create account</a></div>
-    </form>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
-</body>
-</html>
+            {{-- Alert Error --}}
+            @if(session('error'))
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p class="text-sm text-red-600">{{ session('error') }}</p>
+                </div>
+            @endif
+
+            {{-- Social Login --}}
+            <div class="space-y-3 mb-6">
+                <button type="button" onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span class="text-sm text-gray-700">Masuk dengan Google</span>
+                </button>
+
+                <button type="button" onclick="loginWithFacebook()" class="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span class="text-sm text-gray-700">Masuk dengan Facebook</span>
+                </button>
+            </div>
+
+            {{-- Divider --}}
+            <div class="relative mb-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-4 bg-white text-gray-500">atau masuk dengan</span>
+                </div>
+            </div>
+
+            {{-- Login Form --}}
+            <form action="{{ route('login') }}" method="POST" id="loginForm">
+                @csrf
+
+                {{-- Email/Phone --}}
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        Email atau Nomor HP
+                    </label>
+                    <input 
+                        type="text" 
+                        id="email" 
+                        name="email" 
+                        value="{{ old('email') }}"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 @error('email') border-red-500 @enderror"
+                        placeholder="Contoh: email@domain.com"
+                        autocomplete="email"
+                    >
+                    @error('email')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Password --}}
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        Kata Sandi
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password"
+                            class="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 @error('password') border-red-500 @enderror"
+                            placeholder="Masukkan kata sandi"
+                            autocomplete="current-password"
+                        >
+                        <button 
+                            type="button" 
+                            onclick="togglePassword('password')"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                            <svg class="w-5 h-5 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <svg class="w-5 h-5 eye-closed hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                            </svg>
+                        </button>
+                    </div>
+                    @error('password')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Remember & Forgot Password --}}
+                <div class="flex items-center justify-between mb-6">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" name="remember" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
+                        <span class="ml-2 text-sm text-gray-600">Ingat saya</span>
+                    </label>
+                    <a href="{{ route('password.request') }}" class="text-sm text-green-600 hover:text-green-700">
+                        Lupa kata sandi?
+                    </a>
+                </div>
+
+                {{-- Submit Button --}}
+                <button 
+                    type="submit" 
+                    class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    id="submitBtn"
+                >
+                    Masuk
+                </button>
+            </form>
+
+            {{-- Register Link --}}
+            <p class="mt-6 text-center text-sm text-gray-600">
+                Belum punya akun TokoKu?
+                <a href="{{ route('register') }}" class="text-green-600 font-semibold hover:text-green-700">
+                    Daftar
+                </a>
+            </p>
+        </div>
+
+        {{-- Footer Note --}}
+        <p class="mt-6 text-center text-xs text-gray-400">
+            Dengan masuk, kamu menyetujui
+            <a href="#" class="text-green-600 hover:underline">Syarat & Ketentuan</a>
+            serta
+            <a href="#" class="text-green-600 hover:underline">Kebijakan Privasi</a>
+            TokoKu.
+        </p>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+    // Toggle password visibility
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const button = input.nextElementSibling;
+        const eyeOpen = button.querySelector('.eye-open');
+        const eyeClosed = button.querySelector('.eye-closed');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            eyeOpen.classList.add('hidden');
+            eyeClosed.classList.remove('hidden');
+        } else {
+            input.type = 'password';
+            eyeOpen.classList.remove('hidden');
+            eyeClosed.classList.add('hidden');
+        }
+    }
+
+    // Social login handlers (implement sesuai kebutuhan backend)
+    function loginWithGoogle() {
+        window.location.href = '/auth/google';
+    }
+
+    function loginWithFacebook() {
+        window.location.href = '/auth/facebook';
+    }
+
+    // Form submission with loading state
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Memproses...
+        `;
+    });
+</script>
+@endpush
