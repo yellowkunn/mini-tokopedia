@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shops', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->enum('type', ['order', 'promo', 'info', 'review'])->default('info');
+            $table->string('title');
+            $table->text('message');
             $table->string('image')->nullable();
-            $table->string('city')->nullable(); // Lokasi toko (tampil di product card)
-            $table->boolean('is_online')->default(false); // Status online untuk chat
+            $table->string('link')->nullable();
+            $table->timestamp('read_at')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('shops');
+        Schema::dropIfExists('notifications');
     }
 };

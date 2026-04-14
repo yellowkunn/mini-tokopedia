@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('address');
             $table->string('city');
             $table->string('province');
+            $table->string('district')->nullable(); // Kecamatan (untuk ongkir)
             $table->string('postal_code');
             $table->boolean('is_default')->default(false);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');

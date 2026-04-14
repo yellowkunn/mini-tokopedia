@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('profile_picture')->nullable();
             $table->enum('role', ['admin', 'seller', 'customer'])->default('customer');
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('phone')->nullable();
+            $table->enum('gender', ['male', 'female'])->nullable();
+            $table->date('birth_date')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

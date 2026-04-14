@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->integer('quantity')->default(0);
             $table->decimal('price', 12, 2); // Support harga sampai miliaran
+            $table->decimal('original_price', 12, 2)->nullable(); // Harga coret (diskon)
+            $table->integer('weight')->default(0); // Berat (gram) untuk ongkir
+            $table->integer('sold_count')->default(0); // Jumlah terjual
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade');
             $table->timestamps();
