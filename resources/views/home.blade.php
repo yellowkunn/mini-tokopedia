@@ -3,7 +3,7 @@
     Contoh penggunaan layout utama
 --}}
 
-@extends('layouts.app')
+@extends('auth.app')
 
 @section('title', 'Home - TokoKu')
 

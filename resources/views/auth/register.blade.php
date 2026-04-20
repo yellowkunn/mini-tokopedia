@@ -69,7 +69,9 @@
             </div>
 
             {{-- Register Form --}}
-            <form action="{{ route('register') }}" method="POST" id="registerForm">
+            {{-- <form action="{{ route('register') }}" method="POST" id="registerForm"> --}}
+
+            <form action="" method="POST" id="registerForm">
                 @csrf
 
                 {{-- Full Name --}}
@@ -242,7 +244,9 @@
             {{-- Login Link --}}
             <p class="mt-6 text-center text-sm text-gray-600">
                 Sudah punya akun TokoKu?
-                <a href="{{ route('login') }}" class="text-green-600 font-semibold hover:text-green-700">
+                {{-- <a href="{{ route('login') }}" class="text-green-600 font-semibold hover:text-green-700"> --}}
+
+                <a href="" class="text-green-600 font-semibold hover:text-green-700">
                     Masuk
                 </a>
             </p>
