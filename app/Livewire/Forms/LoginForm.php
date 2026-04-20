@@ -12,8 +12,8 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
-    public string $email = '';
+    #[Validate('required|string')]
+    public string $email = ''; 
 
     #[Validate('required|string')]
     public string $password = '';
@@ -21,16 +21,27 @@ class LoginForm extends Form
     #[Validate('boolean')]
     public bool $remember = false;
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+        $loginField = filter_var($this->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        
+        $value = $this->email;
+
+        // Jika user login pakai No HP, kita pastikan formatnya +62 (sesuai database)
+        if ($loginField === 'phone') {
+            // Jika input user mulai dengan '0', ganti jadi '+62'
+            // Jika input user mulai dengan '8', tambah '+62'
+            if (str_starts_with($value, '0')) {
+                $value = '+62' . substr($value, 1);
+            } elseif (str_starts_with($value, '8')) {
+                $value = '+62' . $value;
+            }
+        }
+
+        // Coba Login
+        if (! Auth::attempt([$loginField => $value, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -41,9 +52,6 @@ class LoginForm extends Form
         RateLimiter::clear($this->throttleKey());
     }
 
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
     protected function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
@@ -51,7 +59,6 @@ class LoginForm extends Form
         }
 
         event(new Lockout(request()));
-
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
@@ -62,9 +69,6 @@ class LoginForm extends Form
         ]);
     }
 
-    /**
-     * Get the authentication rate limiting throttle key.
-     */
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());

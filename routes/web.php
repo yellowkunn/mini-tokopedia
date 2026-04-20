@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,4 +24,8 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-require __DIR__.'/auth.php';
+Route::get('auth/google', [LoginController::class, 'redirectToGoogle'])->name('google.login');
+
+Route::get('auth/google/callback', [LoginController::class, 'handleProviderCallback']);
+
+require __DIR__ . '/auth.php';
