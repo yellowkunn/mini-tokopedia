@@ -62,7 +62,7 @@
                         <span class="bg-black/30 px-2 py-1 rounded text-sm font-mono">30</span>
                     </div>
                 </div>
-                <a href="#" class="text-white text-sm hover:underline">Lihat Semua →</a>
+                <a href="{{ route('login') }}" class="text-white text-sm hover:underline">Lihat Semua →</a>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">

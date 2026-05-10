@@ -29,17 +29,19 @@ class LoginController extends Controller
 
             if($finduser){
                 Auth::login($finduser);
-                return redirect('/dashboard');
+                return redirect('/home');
             } else {
                 $newuser = User::create([
                     'name'     => $user->name,
                     'email'    => $user->email,
                     'google_id'=> $user->id,
-                    'password' => Hash::make(Str::random(24))
+                    'password' => Hash::make(Str::random(24)),
+                    'profile_picture' => $user->avatar,
+                    'email_verified_at' => now(),
                 ]);
 
                 Auth::login($newuser);
-                return redirect('/dashboard');
+                return redirect('/home');
             }
 
         } catch (Exception $e) {

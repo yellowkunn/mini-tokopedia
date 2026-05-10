@@ -94,8 +94,8 @@
                     
                     {{-- Auth Buttons --}}
                     @guest
-                        <a href="#" class="px-4 py-2 text-sm font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-50">Masuk</a>
-                        <a href="#" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Daftar</a>
+                        <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-50">Masuk</a>
+                        <a href="{{ route('register') }}" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Daftar</a>
                     @else
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg">
