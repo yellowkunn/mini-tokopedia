@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +17,11 @@ use App\Http\Controllers\LoginController;
 
 use App\Http\Controllers\HomeController;
 
-Route::view('', 'home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/category/{category:slug}', [CategoryController::class, 'show'])->name('category.show');
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])
