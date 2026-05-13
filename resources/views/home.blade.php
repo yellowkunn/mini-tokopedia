@@ -3,7 +3,7 @@
     Contoh penggunaan layout utama
 --}}
 
-@extends('auth.app')
+@extends('layouts.app')
 
 @section('title', 'Home - TokoKu')
 
@@ -79,7 +79,7 @@
         <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-4">
 
             @foreach ($categories as $category)
-                <a href="{{ route('category.show', $category->slug) }}"" class="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg transition">
+                <a href="{{ route('products.index', ['category' => $category->slug]) }}"" class="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg transition">
                     <span class="text-2xl lg:text-3xl mb-1">{{ $category->image }}</span>
                     <span class="text-xs text-gray-600 text-center">{{ $category->name }}</span>
                 </a>
@@ -108,7 +108,7 @@
                 @foreach ($flashSaleProducts as $product)
                     <div class="bg-white rounded-lg overflow-hidden">
                         <div class="aspect-square bg-gray-100">
-                            <img src="{{ asset('storage/products/' . $product->image) }}" class="w-full h-full object-cover"
+                            <img src="{{ asset('images/product/' . $product->image) }}" class="w-full h-full object-cover"
                                 alt="{{ $product->name }}">
                         </div>
                         <div class="p-2">
@@ -136,7 +136,7 @@
             @foreach ($recommendedProducts as $product)
                 <a href="#" class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group">
                     <div class="aspect-square bg-gray-100 relative">
-                        <img src="{{ asset('storage/products/' . $product->image) }}" class="w-full h-full object-cover"
+                        <img src="{{ asset('images/product/' . $product->image) }}" class="w-full h-full object-cover"
                             alt="{{ $product->name }}">
 
                         @if ($product->original_price > $product->price)

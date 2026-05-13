@@ -256,7 +256,7 @@
                             {{-- Product Image --}}
                             <div class="aspect-square bg-gray-100 relative overflow-hidden">
                                 <img 
-                                    src="{{ $product->image ?? 'https://placehold.co/300x300/f3f4f6/9ca3af?text=No+Image' }}" 
+                                    src="{{ asset('images/product/' . $product->image) }}" 
                                     alt="{{ $product->name }}"
                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                                     loading="lazy"

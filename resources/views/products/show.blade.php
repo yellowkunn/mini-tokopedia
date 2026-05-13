@@ -75,7 +75,7 @@
                 <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
                     <img 
                         id="mainImage"
-                        src="{{ $product->images[0] ?? 'https://placehold.co/500x500/f3f4f6/9ca3af?text=No+Image' }}" 
+                        src="{{ asset('images/product/' . $product->image) }}" 
                         alt="{{ $product->name }}"
                         class="w-full h-full object-cover cursor-zoom-in"
                         onclick="openImageModal(this.src)"

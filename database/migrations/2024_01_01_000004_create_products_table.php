@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('weight')->default(0); // Berat (gram) untuk ongkir
             $table->integer('sold_count')->default(0); // Jumlah terjual
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade');
+            $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
             $table->timestamps();
         });
     }

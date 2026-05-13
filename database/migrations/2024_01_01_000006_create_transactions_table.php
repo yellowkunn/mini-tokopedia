@@ -40,7 +40,7 @@ return new class extends Migration
             $table->timestamp('shipped_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->foreignId('shipping_address_id')->nullable()->constrained('shipping_addresses');
-            $table->foreignId('shop_id')->constrained('shops'); // Perlu untuk grouping per toko
+            $table->foreignId('store_id')->constrained('stores'); // Perlu untuk grouping per toko
             $table->text('notes')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
